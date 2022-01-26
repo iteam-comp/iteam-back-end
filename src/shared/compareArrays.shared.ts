@@ -1,5 +1,4 @@
 const compareArrays = (arr1: [], arr2: []) => {
-    const array2Sorted = arr2.slice().sort();
     const difference: [] = [];
 
     const longest = arr1.length >= arr2.length ? arr1: arr2;

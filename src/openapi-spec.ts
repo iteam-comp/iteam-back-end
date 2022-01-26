@@ -10,6 +10,13 @@ async function exportOpenApiSpec(): Promise<void> {
       port: +(process.env.PORT ?? 3000),
       host: process.env.HOST ?? 'localhost',
     },
+    cors: {
+      origin: '*',
+      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+      preflightContinue: false,
+      optionsSuccessStatus: 204,
+      credentials: true,
+    },
   };
   const outFile = process.argv[2] ?? '';
   const app = new IteamApplication(config);
