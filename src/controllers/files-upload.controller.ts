@@ -30,7 +30,7 @@ export class FilesUploadController {
     multerUpload(request, {}, async (err: any) => {
       if (err) {
         console.log('err', err);
-        return reject(this.response.status(500))
+        return reject(this.response.status(500));
       };
       const cloudinaryResponse = await cloudinaryUploader.upload(
         `public/uploads/${request.file.filename}`,
@@ -39,9 +39,10 @@ export class FilesUploadController {
         }
       );
       removeFile(request.file.filename);
+      console.log('works here');
       return resolve(this.response.status(200).json(cloudinaryResponse));
     });
-  })
+  }).catch((err) => this.response.status(500).json(err));
   }
 
   @del("/remove-image")
