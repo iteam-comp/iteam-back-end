@@ -10,10 +10,11 @@ import {
   SchemaObject,
   del,
 } from "@loopback/rest";
+
 import imageCloudinaryId from "../schemas/imageCloudinaryId.schema";
 import { filesUploaderSetup } from "../shared/filesUploader.shared";
 
-const { multerUpload, cloudinaryUploader, removeFile, folderToUpload } = filesUploaderSetup;
+const {multerUpload, cloudinaryUploader, removeFile} = filesUploaderSetup;
 
 @authenticate("jwt")
 export class FilesUploadController {
@@ -34,26 +35,19 @@ export class FilesUploadController {
     })
     request: any
   ): Promise<object> {
-    if (!request.file) return this.response.status(500).json({msg: 'File was not provided'});
     return new Promise<object>((resolve, reject) => {
-    multerUpload(request, {}, async (err: Error) => {
-      if (err) {
-        return reject(this.response.status(500));
-      }
-      try {
-        const cloudinaryResponse = await cloudinaryUploader.upload(
-          `${folderToUpload}/${request.file.filename}`,
-          {
-            public_id: `Iteam/${request.file.filename}`,
-          }
-        );
-        removeFile(request.file.filename);
-        return resolve(this.response.status(200).json(cloudinaryResponse));
-      } catch(err) {
-        console.log("CATCHED ERROR", err);
-      }
-    })
-  });
+    multerUpload(request, {}, async (err: any) => {
+      if (err) return reject(this.response.status(500));
+      const cloudinaryResponse = await cloudinaryUploader.upload(
+        `public/uploads/${request.file.filename}`,
+        {
+          public_id: `Iteam/${request.file.filename}`,
+        }
+      );
+      removeFile(request.file.filename);
+      return resolve(this.response.status(200).json(cloudinaryResponse));
+    });
+  })
   }
 
   @del("/remove-image")
@@ -66,10 +60,10 @@ export class FilesUploadController {
       },
     })
     request: any
-  ): Promise<Response> {
+  ): Promise<any> {
     const { cloudinary_public_id } = request;
     if(! cloudinary_public_id) return this.response.status(400).json({msg: "Cloudinary id was not passed"});
     await cloudinaryUploader.destroy(cloudinary_public_id);
-    return this.response.status(204);
+    this.response.status(204);
   }
 }
