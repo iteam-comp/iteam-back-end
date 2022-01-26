@@ -23,16 +23,7 @@ export class FilesUploadController {
   
   @post("/upload-image")
   async uploadImage(
-    @requestBody({
-      description: "multipart/form-data value.",
-      required: true,
-      content: {
-        "multipart/form-data": {
-          "x-parser": "stream",
-          schema: { type: "object" },
-        },
-      },
-    })
+    @requestBody.file()
     request: any
   ): Promise<object> {
     return new Promise<object>((resolve, reject) => {
