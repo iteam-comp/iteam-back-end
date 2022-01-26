@@ -37,11 +37,10 @@ export class FilesUploadController {
   ): Promise<object> {
     return new Promise<object>((resolve, reject) => {
     multerUpload(request, {}, async (err: any) => {
-      if (err) return reject(this.response.status(500));
-<<<<<<< HEAD
-=======
-      if (!request.file) return reject(this.response.status(500).json({msg: 'File was not provided'}))
->>>>>>> 8b0232c2831ba109b1eeac0cf55bd04289f81060
+      if (err) {
+        console.log('err', err);
+        return reject(this.response.status(500))
+      };
       const cloudinaryResponse = await cloudinaryUploader.upload(
         `public/uploads/${request.file.filename}`,
         {
