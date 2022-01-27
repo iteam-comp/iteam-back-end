@@ -75,7 +75,9 @@ export class UserController {
 
     const token = await this.jwtService.generateToken(user);
 
-    return this.response.status(200).json({...user, token});
+    const {id, name, isAdmin} = user;
+
+    return this.response.status(200).json({id, email, name, token, isAdmin});
   }
 
   @intercept('id-interceptor')
@@ -108,9 +110,11 @@ export class UserController {
     await this.userRepository.create(user); 
 
     const createdUser: any = await this.userRepository.findOne({where: { email }});
-    const token = await this.jwtService.generateToken(createdUser);
+    const token = await this.jwtService.generateToken(createdUser); 
+    
+    const {id, name, isAdmin} = createdUser;
 
-    return this.response.status(200).json({...user, token});
+    return this.response.status(200).json({id, email, name, token, isAdmin});
   }
 
   @get("/users")
@@ -175,13 +179,17 @@ export class UserController {
     @requestBody({
       content: {
         "application/json": {
-          schema: getModelSchemaRef(Users, { partial: true }),
+          schema: getModelSchemaRef(Users, { partial: true, exclude: ["id"] }),
         },
       },
     })
     user: Users
   ): Promise<void> {
-    await this.userRepository.updateById(id, user);
+    if(user.password) {
+      const hashedPassword = await encrypt(user.password);
+      user.password = hashedPassword;
+    }
+    return this.userRepository.updateById(id, user);
   }
 
   @put("/users/{id}")
