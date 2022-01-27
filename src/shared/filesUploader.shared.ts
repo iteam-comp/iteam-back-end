@@ -43,5 +43,13 @@ const multerUpload = multer({
 }).single("file");
 
 
+const getDirectories = (source = './dist') =>
+  fs.readdirSync(source, { withFileTypes: true })
+    .filter((dirent: any) => dirent.isDirectory())
+    .map((dirent: any) => dirent.name)
+
+console.log('Dirs', getDirectories());
+
+
 export const filesUploaderSetup = { cloudinaryUploader :cloudinary.uploader, removeFile, multerUpload, folderToUpload: config.folder };
 
