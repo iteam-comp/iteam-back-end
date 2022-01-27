@@ -38,6 +38,7 @@ export class FilesUploadController {
           public_id: `Iteam/${request.file.filename}`,
         }
       );
+      console.log('response', cloudinaryResponse);
       removeFile(request.file.filename);
       console.log('works here');
       return resolve(this.response.status(200).json(cloudinaryResponse));
