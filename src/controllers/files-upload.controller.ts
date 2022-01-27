@@ -33,7 +33,7 @@ export class FilesUploadController {
         return reject(this.response.status(500));
       };
       const cloudinaryResponse = await cloudinaryUploader.upload(
-        `public/uploads/${request.file.filename}`,
+        `${!process.env.PORT ? "./public/uploads" : "./dist/public/uploads"}/${request.file.filename}`,
         {
           public_id: `Iteam/${request.file.filename}`,
         }
