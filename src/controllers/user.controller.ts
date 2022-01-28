@@ -22,7 +22,7 @@ import {
 
 import {inject, intercept} from '@loopback/core';
 import {Response, RestBindings} from '@loopback/rest';
-import { compare, encrypt } from "../shared/bcrypt.shared";
+import { compare, detectBcryptEncryption, encrypt } from "../shared/bcrypt.shared";
 
 import { Users } from "../models";
 import { UserRepository } from "../repositories";
@@ -32,6 +32,9 @@ import { AllowedEmailsRepository } from "../repositories";
 
 import { TokenServiceBindings } from "@loopback/authentication-jwt";
 import { TokenService, authenticate } from "@loopback/authentication";
+
+import { filesUploaderSetup } from "../shared/filesUploader.shared";
+const { deleteFolder } = filesUploaderSetup;
 
 @intercept('actions-interceptor')
 export class UserController {
@@ -185,7 +188,7 @@ export class UserController {
     })
     user: Users
   ): Promise<void> {
-    if(user.password) {
+    if(user.password && !detectBcryptEncryption(user.password)) {
       const hashedPassword = await encrypt(user.password);
       user.password = hashedPassword;
     }
@@ -208,6 +211,9 @@ export class UserController {
     description: "User DELETE success",
   })
   async deleteById(@param.path.string("id") id: string): Promise<void> {
+    try {
+    await deleteFolder(`Iteam/users/${id}`);
+    } catch (err) {}
     await this.userRepository.deleteById(id);
   }
 }

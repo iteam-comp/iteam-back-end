@@ -10,3 +10,8 @@ export const compare = async (plainPassword: string, hash: string): Promise<bool
     const compareResult = await bcrypt.compare(plainPassword, hash);
     return compareResult;
 }
+
+export const detectBcryptEncryption = (str: string) => {
+    const bcryptStartingSymbolsVariations = ["$2a$", "$2y$", "$2b$"];
+    return bcryptStartingSymbolsVariations.some((symbol) => str.startsWith(symbol));
+}
