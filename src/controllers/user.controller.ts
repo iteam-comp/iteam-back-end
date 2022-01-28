@@ -113,7 +113,7 @@ export class UserController {
 
     const createdUser: any = await this.userRepository.findOne({where: { email }});
     const token = await this.jwtService.generateToken(createdUser); 
-    
+
     const {id, name, isAdmin} = createdUser;
 
     return this.response.status(200).json({id, email, name, token, isAdmin});

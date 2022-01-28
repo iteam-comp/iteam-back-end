@@ -22,6 +22,7 @@ import { AllowedEmails } from "../models";
 import { AllowedEmailsRepository } from "../repositories";
 import { inject, intercept } from "@loopback/core";
 import { Response, RestBindings } from '@loopback/rest';
+import transporter, { messageGenerator } from "../shared/nodemailer.shared";
 
 @authenticate("jwt")
 export class AllowedEmailsController {
@@ -56,6 +57,14 @@ export class AllowedEmailsController {
 
     const checkingExistingEmail = await this.allowedEmailsRepository.findOne({where: {email}});
     if (checkingExistingEmail) return this.response.status(401).json({msg: "This email is already allowed"});
+
+    try {
+      transporter.sendMail({
+        from: process.env.EMAIL_ACCOUNT,
+        to: email,
+        ...messageGenerator("invite")
+      });
+      } catch (err) {}
 
     return this.allowedEmailsRepository.create(allowedEmails);
   }
