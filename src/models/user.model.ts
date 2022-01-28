@@ -32,6 +32,12 @@ export class Users extends Entity {
   name: string;
 
   @property({
+    type: 'number',
+    required: false
+  })
+  age: number;
+
+  @property({
     type: 'boolean',
     default: false,
   })

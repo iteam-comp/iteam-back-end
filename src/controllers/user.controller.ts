@@ -71,7 +71,6 @@ export class UserController {
       const isMatched =  await compare(password, user.password);
       if (!isMatched) return this.response.status(401).json({msg: "Credentilas are wrong"});
     } else  {
-      console.log(googleId);
       const userByGoogleId: Users | unknown = await this.userRepository.findOne({where: { googleId }});
       if (!userByGoogleId) return this.response.status(401).json({msg: "Wrong google AUTH"});
     } 
