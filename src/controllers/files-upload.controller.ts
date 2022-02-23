@@ -27,7 +27,7 @@ export class FilesUploadController {
     public userRepository: UserRepository,
   ) {}
 
-
+  
   @post("/upload-file/{id}")
   async uploadImage(
     @param.path.string('id') id: string,

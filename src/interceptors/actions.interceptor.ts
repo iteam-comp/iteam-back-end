@@ -9,10 +9,11 @@ import {
 } from "@loopback/core";
 import { Response, RestBindings } from "@loopback/rest";
 import { repository } from "@loopback/repository";
-import { Logs } from "../models";
+import { Logs, Projects, Users } from "../models";
 import {
   LogsRepository,
   ProjectRepository,
+  UserRepository,
 } from "../repositories";
 
 import getIdFromUrl from "../shared/getIdFromUrl.shared";
@@ -260,6 +261,7 @@ export class ActionsInterceptor implements Provider<Interceptor> {
     });
 
     try {
+      console.log("args", args);
       if (httpRes && httpReq) {
         const instanceType = httpReq?.url.split("/")[1];
 
@@ -284,6 +286,8 @@ export class ActionsInterceptor implements Provider<Interceptor> {
         const logger = loggers[instanceType as keyof typeof loggers];
 
         const action = actionTypes[methodName as keyof typeof actionTypes];
+
+        console.log("action", action);
 
         action &&
           logger &&
