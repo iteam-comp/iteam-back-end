@@ -176,8 +176,8 @@ export class AllowedEmailsController {
       "application/json": { schema: getModelSchemaRef(AllowedEmails, {exclude: ["id"]}) },
     },
   })
-   params: any): Promise<Response | void> {
-    const { email } = params;
+   request: Omit<AllowedEmails, "id">): Promise<Response | void> {
+    const { email } = request;
     const emailEntity = await this.allowedEmailsRepository.findOne({where: {email}});
     
     if(!emailEntity) return this.response.status(404).json({msg: "Passed email was not found"});
