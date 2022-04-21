@@ -1,39 +1,25 @@
+import {authenticate, TokenService} from "@loopback/authentication";
+import {TokenServiceBindings} from "@loopback/authentication-jwt";
+import {inject, intercept} from '@loopback/core';
 import {
   Count,
   CountSchema,
   Filter,
   FilterExcludingWhere,
   repository,
-  Where,
+  Where
 } from "@loopback/repository";
 import {
-  post,
-  param,
-  get,
-  getModelSchemaRef,
-  patch,
-  put,
-  del,
-  requestBody,
-  response,
-  SchemaObject,
+  del, get,
+  getModelSchemaRef, param, patch, post, put, requestBody,
+  response, Response, RestBindings, SchemaObject
 } from "@loopback/rest";
-
-
-import {inject, intercept} from '@loopback/core';
-import {Response, RestBindings} from '@loopback/rest';
-import { compare, detectBcryptEncryption, encrypt } from "../shared/bcrypt.shared";
-
-import { Users } from "../models";
-import { UserRepository } from "../repositories";
+import {Projects, Users} from "../models";
+import {AllowedEmailsRepository, ProjectRepository, UserRepository} from "../repositories";
 import UserLoginSchema from "../schemas/userLogin.schema";
+import {compare, detectBcryptEncryption, encrypt} from "../shared/bcrypt.shared";
+import {filesUploaderSetup} from "../shared/filesUploader.shared";
 
-import { AllowedEmailsRepository } from "../repositories";
-
-import { TokenServiceBindings } from "@loopback/authentication-jwt";
-import { TokenService, authenticate } from "@loopback/authentication";
-
-import { filesUploaderSetup } from "../shared/filesUploader.shared";
 const { deleteFolder } = filesUploaderSetup;
 
 @intercept('actions-interceptor')
@@ -43,6 +29,8 @@ export class UserController {
     public userRepository: UserRepository,
     @repository(AllowedEmailsRepository)
     public allowedEmailsRepository: AllowedEmailsRepository,
+    @repository(ProjectRepository)
+    public projectRepository: ProjectRepository,
     @inject(RestBindings.Http.RESPONSE) private response: Response,
     @inject(TokenServiceBindings.TOKEN_SERVICE)
     public jwtService: TokenService,
@@ -73,7 +61,7 @@ export class UserController {
     } else  {
       const userByGoogleId: Users | unknown = await this.userRepository.findOne({where: { googleId }});
       if (!userByGoogleId) return this.response.status(401).json({msg: "Wrong google AUTH"});
-    } 
+    }
 
     const token = await this.jwtService.generateToken(user);
 
@@ -109,10 +97,10 @@ export class UserController {
       user.password = hashedPassword;
     }
 
-    await this.userRepository.create(user); 
+    await this.userRepository.create(user);
 
     const createdUser: any = await this.userRepository.findOne({where: { email }});
-    const token = await this.jwtService.generateToken(createdUser); 
+    const token = await this.jwtService.generateToken(createdUser);
 
     const {id, name, isAdmin} = createdUser;
 
@@ -135,6 +123,19 @@ export class UserController {
   async find(@param.filter(Users) filter?: Filter<Users>): Promise<Users[]> {
     return this.userRepository.find(filter);
   }
+
+  @get("/users/{id}/projects/")
+  @authenticate('jwt')
+  async getUserProjects (
+    @param.path.string("id") id: string,
+  ) {
+    const allProjects: Projects[] = await this.projectRepository.find();
+
+    const userProjects = allProjects.filter((project) => (project.mainParticipantId === id) || project.subParticipants?.includes(id));
+
+    return this.response.status(200).json(userProjects);
+  }
+
 
   @patch("/users")
   @response(200, {

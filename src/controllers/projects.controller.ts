@@ -1,28 +1,19 @@
-import { authenticate } from '@loopback/authentication';
-import { inject, intercept } from '@loopback/core';
+import {authenticate} from '@loopback/authentication';
+import {inject, intercept} from '@loopback/core';
 import {
   Count,
   CountSchema,
   Filter,
   FilterExcludingWhere,
   repository,
-  Where,
+  Where
 } from '@loopback/repository';
 import {
-  post,
-  param,
-  get,
-  getModelSchemaRef,
-  patch,
-  put,
-  del,
-  requestBody,
-  response,
-  RestBindings,
-  Response
+  del, get,
+  getModelSchemaRef, param, patch, post, put, requestBody,
+  response, Response, RestBindings
 } from '@loopback/rest';
-import { request } from 'express';
-import {Projects, Users} from '../models';
+import {Projects} from '../models';
 import {ProjectRepository, UserRepository} from '../repositories';
 
 @authenticate('jwt')
@@ -42,7 +33,7 @@ export class ProjectsController {
     description: 'Project model instance',
     content: {'application/json': {schema: getModelSchemaRef(Projects)}},
   })
-  
+
   async create(
     @requestBody({
       content: {
@@ -55,7 +46,6 @@ export class ProjectsController {
     })
     project: Projects,
   ): Promise<Projects> {
-    console.log("Project", project);
     return this.projectRepository.create(project);
   }
 
@@ -132,7 +122,7 @@ export class ProjectsController {
 
     const mainParticipant = await this.userRepository.findById(mainParticipantId);
     const participants = await this.userRepository.find({where: {id: {inq: subParticipants}}});
-    
+
     return this.response.status(200).json({participants, mainParticipant});
   }
 

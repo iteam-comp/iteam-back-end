@@ -24,13 +24,13 @@ export class Projects extends Entity {
     type: 'array',
     itemType: 'string'
   })
-  subParticipants?: [];
+  subParticipants?: string[];
 
   @property({
     type: 'array',
     itemType: 'string'
   })
-  technologies?: [];
+  technologies?: string[];
 
 
   constructor(data?: Partial<Projects>) {
