@@ -1,4 +1,5 @@
 import { Entity, model, property } from '@loopback/repository';
+import { LinkInterface, WorkTypes } from '../interfaces/UserInterface';
 
 @model()
 export class Users extends Entity {
@@ -11,19 +12,32 @@ export class Users extends Entity {
 
 	@property({
 		type: 'string',
+	})
+	googleId: string;
+
+	@property({
+		type: 'string',
 		required: true,
 	})
 	email: string;
 
 	@property({
 		type: 'string',
+		hidden: true,
 	})
 	password: string;
 
 	@property({
-		type: 'string',
+		type: 'number',
+		required: false,
 	})
-	googleId: string;
+	role: number;
+
+	@property({
+		type: 'string',
+		required: false,
+	})
+	avatarUrl: string;
 
 	@property({
 		type: 'string',
@@ -32,16 +46,104 @@ export class Users extends Entity {
 	name: string;
 
 	@property({
-		type: 'boolean',
-		default: false,
+		type: 'string',
+		required: false,
 	})
-	isAdmin?: boolean;
+	surname: string;
 
 	@property({
 		type: 'string',
 		required: false,
 	})
-	avatarUrl: string;
+	birthday?: string;
+
+	@property({
+		type: 'string',
+		required: false,
+	})
+	offerDay?: string;
+
+	@property({
+		type: 'string',
+		required: false,
+	})
+	expirience?: string;
+
+	@property({
+		type: 'string',
+		required: false,
+	})
+	file?: string;
+
+	@property({
+		type: 'string',
+		required: false,
+	})
+	skills?: string;
+
+	@property({
+		type: 'string',
+		required: false,
+	})
+	stack?: string;
+
+	@property({
+		type: 'string',
+		required: false,
+	})
+	phone?: string;
+
+	@property({
+		type: 'string',
+		required: false,
+	})
+	addres?: string;
+
+	@property({
+		type: 'number',
+		required: false,
+	})
+	city?: number;
+
+	@property({
+		type: 'boolean',
+		required: true,
+	})
+	isActive: boolean;
+
+	@property({
+		type: 'number',
+		itemType: 'number',
+		required: false,
+	})
+	team?: number[];
+
+	@property({
+		type: 'number',
+		required: false,
+	})
+	company?: number;
+
+	@property({
+		type: 'number',
+		required: false,
+		default: true,
+		hidden: true,
+	})
+	salary?: number;
+
+	@property({
+		type: 'string',
+		required: false,
+	})
+	workType?: WorkTypes;
+
+	@property({
+		type: 'string',
+		required: false,
+		itemType: 'object',
+	})
+	links?: LinkInterface[];
 
 	constructor(data?: Partial<Users>) {
 		super(data);
