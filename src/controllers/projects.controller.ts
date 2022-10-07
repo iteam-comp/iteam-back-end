@@ -23,14 +23,14 @@ import {
 } from '@loopback/rest';
 // import { request } from 'express';
 import { Projects } from '../models';
-import { ProjectRepository, UserRepository } from '../repositories';
+import { ProjectsRepository, UserRepository } from '../repositories';
 
 @authenticate('jwt')
 @intercept('actions-interceptor')
 export class ProjectsController {
 	constructor(
-		@repository(ProjectRepository)
-		public projectRepository: ProjectRepository,
+		@repository(ProjectsRepository)
+		public projectRepository: ProjectsRepository,
 		@repository(UserRepository)
 		public userRepository: UserRepository,
 		@inject(RestBindings.Http.RESPONSE) private response: Response

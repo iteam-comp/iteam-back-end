@@ -1,5 +1,7 @@
 import { Entity, model, property } from '@loopback/repository';
 
+import { History } from './history.model';
+
 @model()
 export class Projects extends Entity {
 	@property({
@@ -7,7 +9,7 @@ export class Projects extends Entity {
 		id: true,
 		generated: false,
 	})
-	id?: string;
+	id: string;
 
 	@property({
 		type: 'string',
@@ -20,17 +22,29 @@ export class Projects extends Entity {
 	})
 	mainParticipantId?: string;
 
-	@property({
-		type: 'array',
-		itemType: 'string',
-	})
-	subParticipants?: [];
+	@property.array(String)
+	subParticipants?: string[];
+
+	@property.array(History)
+	history?: History[];
+
+	@property.array(String)
+	technologies?: string[];
 
 	@property({
-		type: 'array',
-		itemType: 'string',
+		type: 'string',
 	})
-	technologies?: [];
+	startTime?: string;
+
+	@property({
+		type: 'string',
+	})
+	endTime?: string;
+
+	@property({
+		type: 'boolean',
+	})
+	isActive?: boolean;
 
 	constructor(data?: Partial<Projects>) {
 		super(data);

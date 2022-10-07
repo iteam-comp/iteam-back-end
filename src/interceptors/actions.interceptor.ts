@@ -9,7 +9,7 @@ import {
 import { repository } from '@loopback/repository';
 import { Request, Response, RestBindings } from '@loopback/rest';
 import { Logs } from '../models';
-import { LogsRepository, ProjectRepository } from '../repositories';
+import { LogsRepository, ProjectsRepository } from '../repositories';
 
 import { v4 as uuidv4 } from 'uuid';
 import compareArrays from '../shared/compareArrays.shared';
@@ -155,14 +155,14 @@ class ActionsLogger {
 }
 
 class ProjectsLogger extends ActionsLogger {
-	public projectRepository: ProjectRepository;
+	public projectRepository: ProjectsRepository;
 
 	constructor(
 		instanceName: string,
 		logsRepository: LogsRepository,
 		response: Response,
 		request: any,
-		projectRepository: ProjectRepository
+		projectRepository: ProjectsRepository
 	) {
 		super(instanceName, logsRepository, response, request);
 		this.projectRepository = projectRepository;
@@ -226,8 +226,8 @@ export class ActionsInterceptor implements Provider<Interceptor> {
 
 	constructor(
 		@repository(LogsRepository) public logsRepository: LogsRepository,
-		@repository(ProjectRepository)
-		public projectsRepository: ProjectRepository
+		@repository(ProjectsRepository)
+		public projectsRepository: ProjectsRepository
 	) {}
 
 	/**
