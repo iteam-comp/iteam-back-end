@@ -1,5 +1,6 @@
 import { Entity, model, property } from '@loopback/repository';
-import { LinkInterface, WorkTypes } from '../interfaces/UserInterface';
+import { WorkType } from '../etc/enums';
+import { Links } from './links.model';
 
 @model()
 export class Users extends Entity {
@@ -24,14 +25,9 @@ export class Users extends Entity {
 	@property({
 		type: 'string',
 		hidden: true,
+		required: true,
 	})
 	password: string;
-
-	@property({
-		type: 'number',
-		required: false,
-	})
-	role: number;
 
 	@property({
 		type: 'string',
@@ -41,7 +37,7 @@ export class Users extends Entity {
 
 	@property({
 		type: 'string',
-		required: true,
+		required: false,
 	})
 	name: string;
 
@@ -55,95 +51,96 @@ export class Users extends Entity {
 		type: 'string',
 		required: false,
 	})
-	birthday?: string;
+	birthday: string;
 
 	@property({
 		type: 'string',
 		required: false,
 	})
-	offerDay?: string;
+	offerDay: string;
 
 	@property({
 		type: 'string',
 		required: false,
 	})
-	expirience?: string;
+	expirience: string;
 
 	@property({
 		type: 'string',
 		required: false,
 	})
-	file?: string;
+	file: string;
 
 	@property({
 		type: 'string',
 		required: false,
 	})
-	skills?: string;
+	skills: string;
 
 	@property({
 		type: 'string',
 		required: false,
 	})
-	stack?: string;
+	phone: string;
 
 	@property({
 		type: 'string',
 		required: false,
 	})
-	phone?: string;
-
-	@property({
-		type: 'string',
-		required: false,
-	})
-	addres?: string;
+	addres: string;
 
 	@property({
 		type: 'number',
 		required: false,
 	})
-	city?: number;
-
-	@property({
-		type: 'boolean',
-		required: true,
-	})
-	isActive: boolean;
+	city: number;
 
 	@property({
 		type: 'number',
+		required: false,
+	})
+	company: number;
+
+	@property({
+		type: 'array',
 		itemType: 'number',
 		required: false,
 	})
-	team?: number[];
+	stack: number[];
+
+	@property({
+		type: 'array',
+		itemType: 'number',
+		required: false,
+	})
+	team: number[];
+
+	@property.array(Links)
+	links: object[];
 
 	@property({
 		type: 'number',
 		required: false,
 	})
-	company?: number;
+	salary: number;
+
+	@property({
+		type: 'string',
+		required: false,
+	})
+	workType: WorkType;
 
 	@property({
 		type: 'number',
 		required: false,
-		default: true,
-		hidden: true,
 	})
-	salary?: number;
+	role: number;
 
 	@property({
-		type: 'string',
+		type: 'boolean',
 		required: false,
 	})
-	workType?: WorkTypes;
-
-	@property({
-		type: 'string',
-		required: false,
-		itemType: 'object',
-	})
-	links?: LinkInterface[];
+	isActive: boolean;
 
 	constructor(data?: Partial<Users>) {
 		super(data);
